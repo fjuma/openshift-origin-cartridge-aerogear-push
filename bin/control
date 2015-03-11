@@ -189,7 +189,7 @@ function post_restore {
   cleanup_dump
 }
 
-function pre_deploy {
+function pre_build {
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
     echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
   else
@@ -221,7 +221,7 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
-  pre-deploy)      pre_deploy ;;
+  pre-build)      pre_build ;;
   *)               exit 0
 esac
 
