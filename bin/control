@@ -175,7 +175,7 @@ function pre_restore {
   cleanup_dump
 }
 
-function post_restore_mysql {
+function post_restore {
   if [ -s $OPENSHIFT_DATA_DIR/aerogear_push_token_key ]; then
     TOKEN_KEY=$(< $OPENSHIFT_DATA_DIR/aerogear_push_token_key)
     echo $TOKEN_KEY > $OPENSHIFT_AEROGEAR_PUSH_DIR/env/OPENSHIFT_AEROGEAR_PUSH_TOKEN_KEY
@@ -186,13 +186,17 @@ function post_restore_mysql {
     cp $OPENSHIFT_DATA_DIR/standalone.snapshot.xml $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/standalone.snapshot.xml
   fi
 
+  cleanup_dump
+}
+
+function pre_deploy {
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
     echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
   else
     echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
   fi
-  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_DATA_DIR/myrestoredump.txt 
-  cleanup_dump
+  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_DATA_DIR/myrestoredump.txt
+
 }
 
 function run_sql {
@@ -217,6 +221,7 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
+  pre-deploy)      pre_deploy ;;
   *)               exit 0
 esac
 
