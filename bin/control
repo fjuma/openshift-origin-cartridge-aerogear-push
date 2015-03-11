@@ -187,11 +187,16 @@ function post_restore {
   fi
 
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
-    echo "*************** FOUND SNAPSHOT FILE"
+    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
   else
-    echo "************** DID NOT FIND SNAPSHOT FILE"
+    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
   fi
+  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_DATA_DIR/myrestoredump.txt 
   cleanup_dump
+}
+
+function run_sql {
+  echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' --skip-column-names"
 }
 
 function cleanup_dump {
