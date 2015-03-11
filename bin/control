@@ -186,6 +186,11 @@ function post_restore {
     cp $OPENSHIFT_DATA_DIR/standalone.snapshot.xml $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/standalone.snapshot.xml
   fi
 
+  if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
+    echo "*************** FOUND SNAPSHOT FILE"
+  else
+    echo "************** DID NOT FIND SNAPSHOT FILE"
+  fi
   cleanup_dump
 }
 
