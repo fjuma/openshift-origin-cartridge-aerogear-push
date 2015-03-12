@@ -176,7 +176,7 @@ function pre_restore {
 }
 
 function post_restore {
-  client_message "***** POST RESTORE REGULAR *****"
+  client_result "***** POST RESTORE REGULAR *****"
   if [ -s $OPENSHIFT_DATA_DIR/aerogear_push_token_key ]; then
     TOKEN_KEY=$(< $OPENSHIFT_DATA_DIR/aerogear_push_token_key)
     echo $TOKEN_KEY > $OPENSHIFT_AEROGEAR_PUSH_DIR/env/OPENSHIFT_AEROGEAR_PUSH_TOKEN_KEY
@@ -191,7 +191,7 @@ function post_restore {
 }
 
 function post_restore_mysql-5.5 {
-  client_message "***** POST RESTORE MYSQL ******"
+  client_result "***** POST RESTORE MYSQL ******"
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
     echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
   else
@@ -202,11 +202,13 @@ function post_restore_mysql-5.5 {
 }
 
 function pre_start_mysql-5.5 {
-  echo "******** FUNCTION PRE START MYSQL ********"
+  client_result "******** FUNCTION PRE START MYSQL ********"
+  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttestmysql.txt
 }
 
 function pre_start {
-  echo "********* FUNCTION PRE START *********"
+  client_result "********* FUNCTION PRE START *********"
+  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
 }
 
 function run_sql {
