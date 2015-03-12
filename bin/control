@@ -177,6 +177,11 @@ function pre_restore {
 
 function post_restore {
   client_result "***** POST RESTORE REGULAR *****"
+  if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
+    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/apprestoretest.txt
+  else
+    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/apprestoretest.txt
+  fi
   if [ -s $OPENSHIFT_DATA_DIR/aerogear_push_token_key ]; then
     TOKEN_KEY=$(< $OPENSHIFT_DATA_DIR/aerogear_push_token_key)
     echo $TOKEN_KEY > $OPENSHIFT_AEROGEAR_PUSH_DIR/env/OPENSHIFT_AEROGEAR_PUSH_TOKEN_KEY
