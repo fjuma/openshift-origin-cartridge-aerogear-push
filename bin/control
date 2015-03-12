@@ -193,11 +193,11 @@ function post_restore {
 function post_restore_mysql-5.5 {
   echo "***** POST RESTORE MYSQL ******"
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
-    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
+    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
   else
-    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
+    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
   fi
-  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_DATA_DIR/myrestoredump.txt
+  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoredump.txt
 
 }
 
