@@ -178,9 +178,9 @@ function pre_restore {
 function post_restore {
   client_result "***** POST RESTORE REGULAR *****"
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
-    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/apprestoretest.txt
+    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/thursapprestoretest.txt
   else
-    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/apprestoretest.txt
+    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/thursapprestoretest.txt
   fi
   if [ -s $OPENSHIFT_DATA_DIR/aerogear_push_token_key ]; then
     TOKEN_KEY=$(< $OPENSHIFT_DATA_DIR/aerogear_push_token_key)
@@ -195,27 +195,27 @@ function post_restore {
   cleanup_dump
 }
 
-function post_restore_mysql-5.5 {
-  client_result "***** POST RESTORE MYSQL ******"
-  if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
-    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
-  else
-    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
-  fi
-  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoredump.txt
+#function post_restore_mysql-5.5 {
+#  client_result "***** POST RESTORE MYSQL ******"
+#  if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
+#    echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
+#  else
+#    echo "************** DID NOT FIND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
+#  fi
+#  run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoredump.txt
+#
+#}
 
-}
+#function pre_start_mysql-5.5 {
+#  client_result "******** FUNCTION PRE START MYSQL ********"
+#  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttestmysql.txt
+#}
 
-function pre_start_mysql-5.5 {
-  client_result "******** FUNCTION PRE START MYSQL ********"
-  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttestmysql.txt
-}
-
-function pre_start {
-  client_result "********* FUNCTION PRE START *********"
-  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
-  run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'" || warning "*** COULD NOT UPDATE VARIANT" 187
-}
+#function pre_start {
+#  client_result "********* FUNCTION PRE START *********"
+#  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
+#  run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'" || warning "*** COULD NOT UPDATE VARIANT" 187
+#}
 
 function run_sql {
   echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' --skip-column-names"
@@ -238,12 +238,12 @@ case "$1" in
   pre-snapshot)    pre_snapshot ;;
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
-  post-restore)    echo " ***** IN POST RESTORE "
+  post-restore)    $OPENSHIFT_MYSQL_DIR/bin/control "post_restore"
                    post_restore ;;
-  pre-start)       pre_start ;;
-  pre-start-mysql-5.5)    pre_start_mysql-5.5 ;;
-  post-restore-mysql-5.5) echo " ***** IN POST RESTORE MYSQL "
-                          post_restore_mysql-5.5 ;;
+  #pre-start)       pre_start ;;
+  #pre-start-mysql-5.5)    pre_start_mysql-5.5 ;;
+  #post-restore-mysql-5.5) echo " ***** IN POST RESTORE MYSQL "
+  #                        post_restore_mysql-5.5 ;;
   *)               exit 0
 esac
 
