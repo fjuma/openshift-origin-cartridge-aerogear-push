@@ -214,7 +214,7 @@ function pre_start_mysql-5.5 {
 function pre_start {
   client_result "********* FUNCTION PRE START *********"
   touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
-  run_sql "UPDATE Variant SET description="my new NEW demo variant" where name="demo variant"
+  run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
 }
 
 function run_sql {
