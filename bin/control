@@ -176,7 +176,7 @@ function pre_restore {
 }
 
 function post_restore {
-  echo "***** POST RESTORE REGULAR *****"
+  client_message "***** POST RESTORE REGULAR *****"
   if [ -s $OPENSHIFT_DATA_DIR/aerogear_push_token_key ]; then
     TOKEN_KEY=$(< $OPENSHIFT_DATA_DIR/aerogear_push_token_key)
     echo $TOKEN_KEY > $OPENSHIFT_AEROGEAR_PUSH_DIR/env/OPENSHIFT_AEROGEAR_PUSH_TOKEN_KEY
@@ -191,7 +191,7 @@ function post_restore {
 }
 
 function post_restore_mysql-5.5 {
-  echo "***** POST RESTORE MYSQL ******"
+  client_message "***** POST RESTORE MYSQL ******"
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
     echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoretest.txt
   else
@@ -199,6 +199,14 @@ function post_restore_mysql-5.5 {
   fi
   run_sql "SELECT * FROM Variant" || error "Could not drop existing database" 187 > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/myrestoredump.txt
 
+}
+
+function pre_start_mysql-5.5 {
+  echo "******** FUNCTION PRE START MYSQL ********"
+}
+
+function pre_start {
+  echo "********* FUNCTION PRE START *********"
 }
 
 function run_sql {
@@ -223,7 +231,9 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
-  post-restore-mysql-5.5)      post_restore_mysql-5.5 ;;
+  post-restore-mysql-5.5)    post_restore_mysql-5.5 ;;
+  pre-start)       pre_start ;;
+  pre-start-mysql-5.5)    pre_start_mysql-5.5 ;;
   *)               exit 0
 esac
 
