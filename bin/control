@@ -176,6 +176,7 @@ function pre_restore {
 }
 
 function post_restore {
+  echo "***** POST RESTORE REGULAR *****"
   if [ -s $OPENSHIFT_DATA_DIR/aerogear_push_token_key ]; then
     TOKEN_KEY=$(< $OPENSHIFT_DATA_DIR/aerogear_push_token_key)
     echo $TOKEN_KEY > $OPENSHIFT_AEROGEAR_PUSH_DIR/env/OPENSHIFT_AEROGEAR_PUSH_TOKEN_KEY
@@ -189,7 +190,8 @@ function post_restore {
   cleanup_dump
 }
 
-function pre_build {
+function post_restore_mysql-5.5 {
+  echo "***** POST RESTORE MYSQL ******"
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
     echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_DATA_DIR/myrestoretest.txt
   else
@@ -221,7 +223,7 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
-  pre-build)      pre_build ;;
+  post-restore-mysql-5.5)      post_restore_mysql-5.5 ;;
   *)               exit 0
 esac
 
