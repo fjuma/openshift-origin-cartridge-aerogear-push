@@ -216,8 +216,9 @@ function post_restore {
   if [ -s $OPENSHIFT_DATA_DIR/standalone.snapshot.xml ]; then
     cp $OPENSHIFT_DATA_DIR/standalone.snapshot.xml $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/standalone.snapshot.xml
   fi
-
+  $OPENSHIFT_MYSQL_DIR/bin/control start
   run_sql "UPDATE Variant SET description='my RESTORED new NEW demo variant' where name='demo variant'"
+  $OPENSHIFT_MYSQL_DIR/bin/control stop
   cleanup_dump
 }
 
