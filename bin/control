@@ -10,6 +10,21 @@ source $JBOSSAS_BIN_DIR/util
 
 cartridge_type="aerogear-push"
 
+function mysql_version {
+  echo ${OPENSHIFT_MYSQL_IDENT} | cut -d':' -f3
+}
+
+function mysql_context {
+  case $(mysql_version) in
+    5.1) eval $1 ;;
+    5.5) /usr/bin/scl enable mysql55 "/opt/rh/mysql55/root/$1" ;;
+  esac
+}
+
+function run_sql {
+  echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' $OPENSHIFT_APP_NAME --skip-column-names"
+}
+
 # Check if the jbossas process is running
 function isrunning() {
 
@@ -187,6 +202,14 @@ function post_restore {
   fi
 
   cleanup_dump
+}
+
+function pre_start {
+    echo "pre start" >> $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestart.txt
+    client_result "***** PRE START REGULAR *****"
+    $OPENSHIFT_MYSQL_DIR/bin/control start
+    run_sql "UPDATE Variant SET description='my RESTORED new NEW demo variant' where name='demo variant'"
+    $OPENSHIFT_MYSQL_DIR/bin/control stop
 }
 
 function cleanup_dump {
