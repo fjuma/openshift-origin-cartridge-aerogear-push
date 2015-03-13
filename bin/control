@@ -204,7 +204,7 @@ function post_restore {
   cleanup_dump
 }
 
-function pre_start {
+function pre_build {
     echo "pre start" >> $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestart.txt
     client_result "***** PRE START REGULAR *****"
     $OPENSHIFT_MYSQL_DIR/bin/control start
@@ -230,7 +230,7 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
-  pre-start)       pre_start ;;
+  pre-build)       pre_build ;;
   *)               exit 0
 esac
 
