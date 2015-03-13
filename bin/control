@@ -177,6 +177,7 @@ function pre_restore {
 }
 
 function post_restore {
+  $OPENSHIFT_MYSQL_DIR/bin/control post_restore > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/postrestore.txt 2>&1
   client_result "***** POST RESTORE REGULAR *****"
   if [ -f $OPENSHIFT_DATA_DIR/mysql_dump_snapshot.gz ]; then
     echo "*************** FOUND SNAPSHOT FILE" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/thursapprestoretest.txt
