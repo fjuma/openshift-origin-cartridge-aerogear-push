@@ -220,10 +220,9 @@ function post_restore {
 
 function post_receive() {
   client_result "********* FUNCTION PRE START *********"
-  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
-  touch "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
-  echo "test" >> "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
-  run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
+  echo "post receive" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/postreceivetest.txt
+  echo "post receive" > "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
+  #run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
 }
 
 function run_sql {
