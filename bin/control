@@ -218,7 +218,7 @@ function post_restore {
 #  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttestmysql.txt
 #}
 
-function pre_start {
+function post_receive() {
   client_result "********* FUNCTION PRE START *********"
   touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
   run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
@@ -248,7 +248,7 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
-  pre-start)       pre_start ;;
+  post-receive)    post_receive ;;
   *)               exit 0
 esac
 
