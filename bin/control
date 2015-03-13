@@ -230,6 +230,7 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
+  pre-start)       pre_start ;;
   *)               exit 0
 esac
 
