@@ -7,7 +7,7 @@ JBOSSAS_PID_FILE=${OPENSHIFT_HOMEDIR}/app-root/runtime/aerogear_push.pid
 JBOSSAS_STANDALONE_DIR=${OPENSHIFT_AEROGEAR_PUSH_DIR}/standalone
 
 source $JBOSSAS_BIN_DIR/util
-source "${OPENSHIFT_MYSQL_DIR}/lib/mysql_context"
+#source "${OPENSHIFT_MYSQL_DIR}/lib/mysql_context"
 
 cartridge_type="aerogear-push"
 
