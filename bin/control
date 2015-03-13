@@ -7,6 +7,7 @@ JBOSSAS_PID_FILE=${OPENSHIFT_HOMEDIR}/app-root/runtime/aerogear_push.pid
 JBOSSAS_STANDALONE_DIR=${OPENSHIFT_AEROGEAR_PUSH_DIR}/standalone
 
 source $JBOSSAS_BIN_DIR/util
+source "${OPENSHIFT_MYSQL_DIR}/lib/mysql_context"
 
 cartridge_type="aerogear-push"
 
@@ -217,14 +218,16 @@ function post_restore {
 #  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttestmysql.txt
 #}
 
-#function pre_start {
-#  client_result "********* FUNCTION PRE START *********"
-#  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
-#  run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'" || warning "*** COULD NOT UPDATE VARIANT" 187
-#}
+function pre_start {
+  client_result "********* FUNCTION PRE START *********"
+  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttest.txt
+  run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
+  touch "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
+  echo "test" >> "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
+}
 
 function run_sql {
-  echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' --skip-column-names"
+  echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' $OPENSHIFT_APP_NAME --skip-column-names"
 }
 
 function cleanup_dump {
@@ -244,10 +247,8 @@ case "$1" in
   pre-snapshot)    pre_snapshot ;;
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
-  post-restore)
-      $OPENSHIFT_MYSQL_DIR/bin/control post_restore
-      post_restore 
-      ;;
+  post-restore)    post_restore ;;
+  pre-start)       pre_start ;;
   *)               exit 0
 esac
 
