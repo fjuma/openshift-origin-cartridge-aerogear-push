@@ -11,6 +11,23 @@ source $JBOSSAS_BIN_DIR/util
 
 cartridge_type="aerogear-push"
 
+
+function mysql_version {
+  echo ${OPENSHIFT_MYSQL_IDENT} | cut -d':' -f3
+}
+
+function mysql_context {
+  case $(mysql_version) in
+    5.1) eval $1 ;;
+    5.5) /usr/bin/scl enable mysql55 "/opt/rh/mysql55/root/$1" ;;
+  esac
+}
+
+function run_sql {
+  echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' $OPENSHIFT_APP_NAME --skip-column-names"
+}
+
+
 # Check if the jbossas process is running
 function isrunning() {
 
@@ -200,6 +217,7 @@ function post_restore {
     cp $OPENSHIFT_DATA_DIR/standalone.snapshot.xml $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/standalone.snapshot.xml
   fi
 
+  run_sql "UPDATE Variant SET description='my RESTORED new NEW demo variant' where name='demo variant'"
   cleanup_dump
 }
 
@@ -219,16 +237,12 @@ function post_restore {
 #  touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestarttestmysql.txt
 #}
 
-function post_receive() {
-  client_result "********* FUNCTION PRE START *********"
-  echo "post receive" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/postreceivetest.txt
-  echo "post receive" > "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
-  #run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
-}
-
-function run_sql {
-  echo "$@" | mysql_context "/usr/bin/mysql -h $OPENSHIFT_MYSQL_DB_HOST -P $OPENSHIFT_MYSQL_DB_PORT -u $OPENSHIFT_MYSQL_DB_USERNAME --password='$OPENSHIFT_MYSQL_DB_PASSWORD' $OPENSHIFT_APP_NAME --skip-column-names"
-}
+#function post_receive() {
+#  client_result "********* FUNCTION PRE START *********"
+#  echo "post receive" > $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/postreceivetest.txt
+#  echo "post receive" > "${OPENSHIFT_MYSQL_DIR}/fridaytest.txt"
+#  #run_sql "UPDATE Variant SET description='my new NEW demo variant' where name='demo variant'"
+#}
 
 function cleanup_dump {
   rm -f $OPENSHIFT_DATA_DIR/aerogear_push_token_key
@@ -248,7 +262,6 @@ case "$1" in
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
   post-restore)    post_restore ;;
-  post-receive)    post_receive ;;
   *)               exit 0
 esac
 
