@@ -1,3 +1,5 @@
 #!/bin/sh
 
-${OPENSHIFT_AEROGEAR_PUSH_DIR}/usr/lib/migrator/bin/ups-migrator --url=jdbc:mysql://${OPENSHIFT_MYSQL_DB_HOST}:${OPENSHIFT_MYSQL_DB_PORT}/${OPENSHIFT_APP_NAME} --driver=com.mysql.jdbc.Driver --username=${OPENSHIFT_MYSQL_DB_USERNAME} --password=${OPENSHIFT_MYSQL_DB_PASSWORD} --changeLogFile=liquibase/master.xml update
+echo "In POST_START hook"
+
+#${OPENSHIFT_AEROGEAR_PUSH_DIR}/usr/lib/migrator/bin/ups-migrator --url=jdbc:mysql://${OPENSHIFT_MYSQL_DB_HOST}:${OPENSHIFT_MYSQL_DB_PORT}/${OPENSHIFT_APP_NAME} --driver=com.mysql.jdbc.Driver --username=${OPENSHIFT_MYSQL_DB_USERNAME} --password=${OPENSHIFT_MYSQL_DB_PASSWORD} --changeLogFile=liquibase/master.xml update
