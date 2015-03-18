@@ -87,7 +87,8 @@ function start() {
   # Check for running app
   if isrunning; then
       echo "Application is already running"
-  else    
+  else
+    #${OPENSHIFT_AEROGEAR_PUSH_DIR}/usr/lib/migrator/bin/ups-migrator --url=jdbc:mysql://${OPENSHIFT_MYSQL_DB_HOST}:${OPENSHIFT_MYSQL_DB_PORT}/${OPENSHIFT_APP_NAME} --driver=com.mysql.jdbc.Driver --username=${OPENSHIFT_MYSQL_DB_USERNAME} --password=${OPENSHIFT_MYSQL_DB_PASSWORD} --changeLogFile=liquibase/master.xml update    
     ${JBOSSAS_BIN_DIR}/standalone.sh > ${OPENSHIFT_TMP_DIR}/${cartridge_type}.log 2>&1 &
     PROCESS_ID=$!
     echo "$PROCESS_ID" > ${JBOSSAS_PID_FILE}
@@ -167,11 +168,6 @@ function pre_snapshot {
   stop
 }
 
-function pre_start {
-    touch $OPENSHIFT_AEROGEAR_PUSH_DIR/standalone/configuration/standalone_xml_history/snapshot/prestart.txt
-    ${OPENSHIFT_AEROGEAR_PUSH_DIR}/usr/lib/migrator/bin/ups-migrator --url=jdbc:mysql://${OPENSHIFT_MYSQL_DB_HOST}:${OPENSHIFT_MYSQL_DB_PORT}/${OPENSHIFT_APP_NAME} --driver=com.mysql.jdbc.Driver --username=${OPENSHIFT_MYSQL_DB_USERNAME} --password=${OPENSHIFT_MYSQL_DB_PASSWORD} --changeLogFile=liquibase/master.xml update
-}
-
 function post_snapshot {
   true
 }
@@ -208,7 +204,6 @@ case "$1" in
   tidy)            tidy ;;
   threaddump)      threaddump ;;
   update-configuration) update-configuration;;
-  pre-start)       pre_start ;;
   pre-snapshot)    pre_snapshot ;;
   post-snapshot)   post_snapshot ;;
   pre-restore)     pre_restore ;;
